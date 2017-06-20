@@ -1,1 +1,1 @@
-This is the solution for the Spring MVC lab.
+This is the starting point for the database migration lab.
