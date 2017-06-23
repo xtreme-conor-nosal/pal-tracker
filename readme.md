@@ -1,1 +1,1 @@
-This is the starting point for the database migration lab.
+This is the solution for the Database Migration lab.
