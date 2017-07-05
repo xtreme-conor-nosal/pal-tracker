@@ -1,7 +1,7 @@
 drop database if exists tracker_dev;
 drop database if exists tracker_test;
 
-create user 'tracker'@'localhost'
+create user IF NOT EXISTS  'tracker'@'localhost'
   identified by '';
 grant all privileges on *.* to 'tracker' @'localhost';
 

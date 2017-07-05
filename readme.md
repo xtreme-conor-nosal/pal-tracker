@@ -1,1 +1,1 @@
-This is the starting point for the JDBC Template lab.
+This is the solution for the JDBC template lab.
