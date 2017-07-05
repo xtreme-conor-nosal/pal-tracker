@@ -1,1 +1,1 @@
-This is the solution for the JDBC template lab.
+This is the starting point for the Spring Boot Actuator lab.

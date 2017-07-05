@@ -1,6 +1,5 @@
 package io.pivotal.pal.trackertest;
 
-
 import io.pivotal.pal.tracker.JdbcTimeEntryRepository;
 import io.pivotal.pal.tracker.TimeEntry;
 import io.pivotal.pal.tracker.TimeEntryRepository;
@@ -10,7 +9,6 @@ import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +32,7 @@ public class JdbcTimeEntryRepositoryTest {
         TimeEntry newTimeEntry = new TimeEntry(123, 321, "today", 8);
         TimeEntry entry = subject.create(newTimeEntry);
 
-        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("Select * from time_entries where id = ?", entry.getId());
+        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("SELECT * FROM time_entries WHERE id = ?", entry.getId());
 
         assertThat(foundEntry.get("id")).isEqualTo(entry.getId());
         assertThat(foundEntry.get("project_id")).isEqualTo(123L);
@@ -59,6 +57,7 @@ public class JdbcTimeEntryRepositoryTest {
     public void getFindsATimeEntry() throws Exception {
         jdbcTemplate.execute(
             "INSERT INTO time_entries (id, project_id, user_id, date, hours) " +
+
             "VALUES (999, 123, 321, 'today', 8)"
         );
 
@@ -130,7 +129,7 @@ public class JdbcTimeEntryRepositoryTest {
 
         TimeEntry timeEntry = subject.update(1000L, updatedTimeEntry);
 
-        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("Select * from time_entries where id = ?", timeEntry.getId());
+        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("SELECT * FROM time_entries WHERE id = ?", timeEntry.getId());
 
         assertThat(foundEntry.get("id")).isEqualTo(timeEntry.getId());
         assertThat(foundEntry.get("project_id")).isEqualTo(456L);
@@ -148,7 +147,7 @@ public class JdbcTimeEntryRepositoryTest {
 
         subject.delete(999L);
 
-        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("Select count(*) count from time_entries where id = ?", 999);
+        Map<String, Object> foundEntry = jdbcTemplate.queryForMap("SELECT count(*) count FROM time_entries WHERE id = ?", 999);
         assertThat(foundEntry.get("count")).isEqualTo(0L);
     }
 }

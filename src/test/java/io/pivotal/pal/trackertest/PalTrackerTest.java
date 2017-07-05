@@ -74,7 +74,7 @@ public class PalTrackerTest {
         assertThat(readJson.read("$.hours", Long.class)).isEqualTo(8);
 
         // Update
-        TimeEntry timeEntryUpdates = new TimeEntry(1, 2, 3, "tomorrow", 9);
+        TimeEntry timeEntryUpdates = new TimeEntry(2, 3, "tomorrow", 9);
 
         ResponseEntity<String> updateResponse = restTemplate.exchange("/timeEntries/1", HttpMethod.PUT, new HttpEntity(timeEntryUpdates, null), String.class);
         assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.OK);

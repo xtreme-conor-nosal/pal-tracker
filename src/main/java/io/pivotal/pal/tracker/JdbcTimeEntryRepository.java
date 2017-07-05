@@ -1,8 +1,6 @@
 package io.pivotal.pal.tracker;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
@@ -41,10 +39,10 @@ public class JdbcTimeEntryRepository implements TimeEntryRepository {
 
     @Override
     public TimeEntry get(Long id) {
-        return jdbcTemplate.query(
-            "SELECT id, project_id, user_id, date, hours FROM time_entries WHERE id = ?",
-            new Object[]{id},
-            extractor);
+            return jdbcTemplate.queryForObject(
+                "SELECT id, project_id, user_id, date, hours FROM time_entries WHERE id = ?",
+                new Object[]{id},
+                extractor);
     }
 
     @Override
