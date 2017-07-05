@@ -1,1 +1,1 @@
-This is the solution for the Spring Boot Actuator lab.
+This is the starting point for the basic authentication lab.
