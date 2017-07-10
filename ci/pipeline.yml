@@ -1,0 +1,33 @@
+resources:
+- name: source-code
+  type: git
+  source:
+    uri:  git@github.com:xtreme-conor-nosal/pal-tracker.git
+    branch: master
+    private_key: {{github-private-key}}
+
+- name: deployment
+  type: cf
+  source:
+    api: https://api.sys.quandary.pal.pivotal.io
+    username: {{deploy-username}}
+    password: {{deploy-password}}
+    organization: {{deploy-org}}
+    space: {{deploy-space}}
+    skip_cert_check: true
+
+jobs:
+- name: build-and-deploy
+  public: true
+  serial: true
+  plan:
+  - get: source-code
+    trigger: true
+  - task: build
+    file: source-code/ci/tasks/build.yml
+    input_mapping: {pal-tracker: source-code}
+  - put: deployment
+    params:
+      manifest: source-code/manifest.yml
+      path: build-output/pal-tracker.jar
+      environment_variables: {welcome_message: "Hello from Concourse"}
