@@ -16,18 +16,53 @@ resources:
     space: {{deploy-space}}
     skip_cert_check: true
 
+- name: pal-tracker-artifacts
+  type: s3
+  source:
+    bucket: {{aws-bucket}}
+    access_key_id: {{aws-access-key-id}}
+    secret_access_key: {{aws-secret-access-key}}
+    regexp: releases/pal-tracker-(.*).jar
+
+- name: version
+  type: semver
+  source:
+    initial_version: 1.0.0
+    driver: s3
+    key: pal-tracker/version
+    bucket: {{aws-bucket}}
+    access_key_id: {{aws-access-key-id}}
+    secret_access_key: {{aws-secret-access-key}}
+
 jobs:
-- name: build-and-deploy
+- name: build
   public: true
   serial: true
   plan:
   - get: source-code
     trigger: true
+  - get: version
+    params: {bump: patch}
   - task: build
     file: source-code/ci/tasks/build.yml
-    input_mapping: {pal-tracker: source-code}
+    input_mapping: {
+      pal-tracker: source-code
+    }
+  - put: pal-tracker-artifacts
+    params:
+      file: build-output/pal-tracker-*.jar
+  - put: version
+    params:
+      file: version/number
+
+- name: deploy-review
+  plan:
+  - get: source-code
+  - get: pal-tracker-artifacts
+    trigger: true
+    passed: [build]
   - put: review-deployment
     params:
       manifest: source-code/ci/deployments/manifest-review.yml
-      path: build-output/pal-tracker.jar
+      path: pal-tracker-artifacts/pal-tracker-*.jar
       environment_variables: {welcome_message: "Hello from the review environment"}
