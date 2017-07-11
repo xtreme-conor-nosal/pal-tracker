@@ -16,6 +16,16 @@ resources:
     space: {{deploy-space}}
     skip_cert_check: true
 
+- name: production-deployment
+  type: cf
+  source:
+    api: https://api.sys.quandary.pal.pivotal.io
+    username: {{deploy-username}}
+    password: {{deploy-password}}
+    organization: {{deploy-org}}
+    space: {{production-space}}
+    skip_cert_check: true
+
 - name: pal-tracker-artifacts
   type: s3
   source:
@@ -66,3 +76,14 @@ jobs:
       manifest: source-code/ci/deployments/manifest-review.yml
       path: pal-tracker-artifacts/pal-tracker-*.jar
       environment_variables: {welcome_message: "Hello from the review environment"}
+
+- name: deploy-production
+  plan:
+  - get: source-code
+  - get: pal-tracker-artifacts
+    passed: [deploy-review]
+  - put: production-deployment
+    params:
+      manifest: source-code/ci/deployments/manifest-production.yml
+      path: pal-tracker-artifacts/pal-tracker-*.jar
+      environment_variables: {welcome_message: "Hello from the production environment"}
