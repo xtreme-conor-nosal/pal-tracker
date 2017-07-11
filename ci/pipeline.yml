@@ -6,7 +6,7 @@ resources:
     branch: master
     private_key: {{github-private-key}}
 
-- name: deployment
+- name: review-deployment
   type: cf
   source:
     api: https://api.sys.quandary.pal.pivotal.io
@@ -26,8 +26,8 @@ jobs:
   - task: build
     file: source-code/ci/tasks/build.yml
     input_mapping: {pal-tracker: source-code}
-  - put: deployment
+  - put: review-deployment
     params:
-      manifest: source-code/manifest.yml
+      manifest: source-code/ci/deployments/manifest-review.yml
       path: build-output/pal-tracker.jar
-      environment_variables: {welcome_message: "Hello from Concourse"}
+      environment_variables: {welcome_message: "Hello from the review environment"}
